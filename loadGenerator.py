@@ -11,7 +11,11 @@ from threading import Timer
 import argparse
 from time import sleep
 import subprocess
+import getpass
+import os
 
+minAmp = 0
+currentAmp = minAmp
 class RepeatedTimer(object):
     def __init__(self, interval, function, *args, **kwargs):
         self._timer     = None
@@ -37,17 +41,28 @@ class RepeatedTimer(object):
         self._timer.cancel()
         self.is_running = False
 
-def generatePulse(amplitude, server):
-    print "Run iPerf to server ({0}) with amplitude={1}!".format(server, amplitude)
-    iperfCommand = "iperf -c {0}".format(server)
-    process = subprocess.Popen(iperfCommand, stdout=subprocess.PIPE, stderr=None, shell=True)
-    for line in iter(process.stdout.readline,''):
-        print line
+def generatePulse(amplitude, server, sudoPassword):
+    #print "Run iPerf to server ({0}) with amplitude={1}!".format(server, amplitude)
+    #iperfCommand = "iperf -c {0}".format(server)
+    
+    global currentAmp
+
+    if currentAmp == minAmp:
+        currentAmp = amplitude
+    else :
+        currentAmp = minAmp
+    print "Setting txpower to {0}".format(currentAmp)
+    iwconfig_command = "echo {0}| sudo -S sudo iwconfig wlan1 txpower {1}".format(sudoPassword, currentAmp)
+    #process = subprocess.Popen(iwconfig_command, stdout=subprocess.PIPE, stderr=None, shell=True)
+    p = os.system(iwconfig_command)
+    #for line in iter(process.stdout.readline,''):
+    #    print line
 
 def main(args):
+    sudoPassword = getpass.getpass()
     # print args.ap, args.channel, args.interval, args.type
     if args.type == "pulse":
-        rt = RepeatedTimer(args.interval, generatePulse, args.amplitude, args.server)
+        rt = RepeatedTimer(args.interval, generatePulse, args.amplitude, args.server, sudoPassword)
     try:
         sleep(args.MAXVAL)
     finally:
