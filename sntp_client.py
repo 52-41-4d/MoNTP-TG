@@ -14,5 +14,14 @@ def main():
         except:
             print "Error in SNTP request"
 
+def SNTP_main():
+    c = ntplib.NTPClient()
+    try:
+        response = c.request('0.pool.ntp.org', version=3)
+        return (current_milli_time(), response.offset)
+    except:
+        return ('N','N')
+
 if __name__ == "__main__":
+    '''for testing by Sathiya'''
     main()
