@@ -12,7 +12,6 @@ import random
 import time
 import math
 import numpy as np
-from sntp_client import SNTP_main
 
 '''
 Sample output:
@@ -22,7 +21,7 @@ lastAssocStatus: 0, 802.11 auth: open, link auth: none, BSSID: e8:ba:70:f8:3d:8e
 
 __author__ = 'rkrish@cs.wisc.edu'
 
-interval = 0.5
+interval = 1
 arr = []
 args = ""
 try:
@@ -121,13 +120,17 @@ class DynamicPlotter():
 
     def updateplotMain(self):
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=None, shell=True)
+        rtt = None
+        rssi = None
+        noise = None
         for line in iter(process.stdout.readline,''):
             line = line.strip()
             vals = line.split(": ")
             if "BSSID" in vals[0]:
                 ip = netifaces.gateways()['default'][netifaces.AF_INET][0]
                 r = pyping.ping(ip, count=1)
-                self.databuffer3.append(float(r.min_rtt))
+                rtt = r.min_rtt
+                self.databuffer3.append(float(rtt))
                 '''
                 milli, sntp_offset = SNTP_main()
                 if milli!='N' and sntp_offset!='N':
@@ -136,9 +139,11 @@ class DynamicPlotter():
                     self.databuffer4.append(float(0))
                 '''
             if "agrCtlRSSI" in vals[0]:
-                self.databuffer1.append(float(vals[1]))
+                rssi = vals[1]
+                self.databuffer1.append(float(rssi))
             if "agrCtlNoise" in vals[0]:
-                self.databuffer2.append(float(vals[1]))
+                noise = vals[1]
+                self.databuffer2.append(float(noise))
 
             self.y1[:] = self.databuffer1
             self.y2[:] = self.databuffer2
@@ -149,6 +154,7 @@ class DynamicPlotter():
             self.curve3.setData(self.x3, self.y3)
             # self.curve4.setData(self.x4, self.y4)
             self.app.processEvents()
+        print "{0},{1},{2},{3}".format(int(time.time()), rssi, noise, rtt)
 
     def run(self):
         self.app.exec_()

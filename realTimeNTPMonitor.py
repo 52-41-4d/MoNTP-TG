@@ -2,13 +2,14 @@
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
 
+import time
 import collections
 import numpy as np
 from sntp_client import SNTP_main
 
 __author__ = 'rkrish@cs.wisc.edu'
 
-interval = 5
+interval = 25
 arr = []
 args = ""
 
@@ -44,8 +45,9 @@ class DynamicPlotter():
         milli, sntp_offset = SNTP_main()
         if milli!='N' and sntp_offset!='N':
             self.databuffer4.append(float(sntp_offset))
+            print "{0},{1}".format(int(time.time()), sntp_offset)
         else:
-            self.databuffer4.append(float(0))
+            self.databuffer4.append(None)
 
         self.y4[:] = self.databuffer4
         self.curve4.setData(self.x4, self.y4)
@@ -55,5 +57,5 @@ class DynamicPlotter():
         self.app.exec_()
 
 if __name__ == '__main__':
-    m = DynamicPlotter(sampleinterval=1, timewindow=100.)
+    m = DynamicPlotter(sampleinterval=20, timewindow=100.)
     m.run()
