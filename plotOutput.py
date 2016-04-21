@@ -30,7 +30,7 @@ def main(prefix):
     axarr[0].plot(ts, noise, label="Noise strength (dBm)", lw=3)
     axarr[0].legend()
     axarr[1].grid()
-    axarr[1].bar(ts, offset, label="SNTP offset (ms)", lw=3)
+    axarr[1].bar(ts, offset, label="SNTP offset (s)", lw=3)
     axarr[1].legend()
 
     f.text(0.5, 0.04, 'Timestamp', ha='center')
