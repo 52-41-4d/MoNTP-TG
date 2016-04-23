@@ -127,7 +127,10 @@ class DynamicPlotter():
             line = line.strip()
             vals = line.split(": ")
             if "BSSID" in vals[0]:
+                '''
                 ip = netifaces.gateways()['default'][netifaces.AF_INET][0]
+                '''
+                ip = 'www.google.com'
                 r = pyping.ping(ip, count=1)
                 rtt = r.min_rtt
                 self.databuffer3.append(float(rtt))

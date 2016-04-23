@@ -1,5 +1,6 @@
 import datetime
 import serial
+import time
 
 # Settings
 PORT = '/dev/cu.usbserial'
@@ -122,6 +123,10 @@ class Device(object):
         self.record = None
         self.gsv = {}
         self.satellites = {}
+
+    def getRecord(self):
+        return self.record
+
     def run(self):
         while True:
             self.parse_line()
@@ -209,11 +214,13 @@ class Device(object):
             self.on_satellites(dict(self.gsv))
     def on_record(self, record):
         self.record = record
-        print self.record
+        print float(time.time()), self.record.timestamp
+        '''
         print
         for key in sorted(self.satellites):
             print self.satellites[key]
         print
+        '''
     def on_satellites(self, satellites):
         self.satellites = satellites
 
