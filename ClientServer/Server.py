@@ -9,4 +9,3 @@ while True:
     buf = connection.recv(64)
     if len(buf) > 0:
         print buf
-        break
