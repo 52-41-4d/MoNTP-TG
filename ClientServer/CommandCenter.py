@@ -75,11 +75,11 @@ class Client(Thread):
                     num = float(num)
                     self.delays.append(num)
                     changePower = False
-                    if len(self.delay) == self.delay.maxlen and self.delays.count(-1) >= self.incThreshold  and self.txpower < self.maxtxpower:
+                    if len(self.delays) == self.delays.maxlen and self.delays.count(-1) >= self.incThreshold  and self.txpower < self.maxtxpower:
                         self.txpower += 1
                         changePower = True
                         self.delays.clear()
-                    elif len(self.delay) == self.delay.maxlen and self.delays.count(-1) <= self.decThreshold  and self.txpower > self.mintxpower:
+                    elif len(self.delays) == self.delays.maxlen and self.delays.count(-1) <= self.decThreshold  and self.txpower > self.mintxpower:
                         self.txpower -= 1
                         changePower = True
                         self.delays.clear()
