@@ -85,15 +85,15 @@ class Client(Thread):
 
 if __name__ == "__main__":
 	progName = "downloadInThread"
-	parser = argparse.parser(prog = progName)
-	parser.add_args("-s", "--serverA", dest="hostServer", help="server address")
-	parser.add_args("-c", "--clientA", dest="hostClient", help="client address")
-	parser.add_args("-a", "--portS", dest="p1", help="server port", type=int)
-	parser.add_args("-b", "--portC", dest="p2", help="client port", type=int)
-	parser.add_args("-n", "--name", dest="name", help="Name")
-	parser.add_args("-d", "--downloadTime", dest="dTime", help="Download time")
-	parser.add_args("-k", "--sleepTime", dest="sTime", help="Sleep time")
-	parser.add_args("-i", "--iterations", dest="iteration", help="No. of iterations", type=int)
+	parser = argparse.ArgumentParser(prog = progName)
+	parser.add_argument("-s", "--baseIP", dest="hostServer", help="server address")
+	parser.add_argument("-c", "--commandIP", dest="hostClient", help="client address")
+	parser.add_argument("-a", "--basePort", dest="p1", help="server port", type=int)
+	parser.add_argument("-b", "--commandPort", dest="p2", help="client port", type=int)
+	parser.add_argument("-n", "--name", dest="name", help="Name")
+	parser.add_argument("-d", "--downloadTime", dest="dTime", help="Download time")
+	parser.add_argument("-k", "--sleepTime", dest="sTime", help="Sleep time")
+	parser.add_argument("-i", "--iterations", dest="iteration", help="No. of iterations", type=int)
 	args = parser.parse_args()
 
 	downloaderQ = Queue()
