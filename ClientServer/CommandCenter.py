@@ -18,17 +18,18 @@ class Server(Thread):
         self.addr = (host,port)
         self.downloaderThread = downloaderThread
 
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind(self.addr)
 
     def run(self):
-        self.socket.listen(5)
+        # self.socket.listen(5)
         while True:
             # print 'Waiting for connection..'
-            client, caddr = self.socket.accept()
+            # client, caddr = self.socket.accept()
             # print 'Connected To',caddr
 
-            data = client.recv(self.bufsize)
+            # data = client.recv(self.bufsize)
+            data, caddr = self.socket.recvfrom(self.bufsize)
             if not data:
                 continue
             print data

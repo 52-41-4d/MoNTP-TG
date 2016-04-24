@@ -15,10 +15,14 @@ def getPingData():
     return rtt
 
 def sendPingData(commandServer, commandServerPort, rtt):
-    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientsocket.connect((commandServer, commandServerPort))
-    clientsocket.send(rtt)
-    clientsocket.close()
+    clientsocket = None
+    try:
+        clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        clientsocket.sendto(rtt, (commandServer, commandServerPort))
+    except:
+        print "Socket hang"
+    finally:
+        clientsocket.close()
 
 if __name__ == "__main__":
     commandServer = sys.argv[1]
