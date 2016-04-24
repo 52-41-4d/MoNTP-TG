@@ -87,8 +87,8 @@ class Client(Thread):
 if __name__ == "__main__":
 	progName = "downloadInThread"
 	parser = argparse.ArgumentParser(prog = progName)
-	parser.add_argument("-s", "--baseIP", dest="hostServer", help="server address")
-	parser.add_argument("-c", "--commandIP", dest="hostClient", help="client address")
+	parser.add_argument("-s", "--baseIP", dest="baseIP", help="server address")
+	parser.add_argument("-c", "--commandIP", dest="commandIP", help="client address")
 	parser.add_argument("-a", "--basePort", dest="p1", help="server port", type=int)
 	parser.add_argument("-b", "--commandPort", dest="p2", help="client port", type=int)
 	parser.add_argument("-n", "--name", dest="name", help="Name")
@@ -100,8 +100,8 @@ if __name__ == "__main__":
 	downloaderQ = Queue()
 	downloaderThread = MyThread(downloaderQ, args=(True,))
 
-	server = Server(args.hostServer, args.p1, args.name)
-	client = Client(args.hostClient, args.p2, args.name, deque(maxlen=15),22, 22, 27)
+	server = Server(args.commandIP, args.p1, args.name)
+	client = Client(args.baseIP, args.p2, args.name, deque(maxlen=15),22, 22, 27)
 	server.start()
 	client.start()
 	downloaderThread.start()
