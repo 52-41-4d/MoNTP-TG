@@ -36,8 +36,8 @@ class Server(Thread):
 			print "Produced", data
 			condition.notify()
 			condition.release()
-            if data == "END":
-                return
+            		if data == "END":
+                		return
 
 class Client(Thread):
 	def __init__(self,host,port,name, delays, txpower, mintxpower, maxtxpower):
@@ -67,9 +67,9 @@ class Client(Thread):
 				condition.acquire()
 				if not queue:
 					condition.wait()
-                    num = queue.pop()
-                    if num == "END":
-                        return
+                    			num = queue.pop()
+                    			if num == "END":
+                        			return
 					num = float(num)
 					self.delays.append(num)
 					changePower = False
