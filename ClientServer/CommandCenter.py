@@ -88,7 +88,7 @@ class Client(Thread):
                 if changePower:
                     commandVal = "set:tx-power:" + str(self.txpower)
                     print "Consumed", commandVal
-                    self.sendSocketData(commadVal)
+                    self.sendSocketData(commandVal)
                     condition.release()
 
 if __name__ == "__main__":
