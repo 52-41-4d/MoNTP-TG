@@ -53,41 +53,39 @@ class Client(Thread):
         self.maxtxpower = maxtxpower
         self.incThreshold = incThreshold
         self.decThreshold = decThreshold
-
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = None
 
     def run(self):
-        invalid = True
-        while invalid:
-            try:
-                invalid = False
-                self.socket.connect(self.addr)
-            except:
-                invalid = True
-            global queue
-            while True:
-                condition.acquire()
-                if not queue:
-                    condition.wait()
-                    num = queue.pop()
-                    if num == "END":
-                        return
-                    num = float(num)
-                    self.delays.append(num)
-                    changePower = False
-                    if len(self.delays) == self.delays.maxlen and self.delays.count(-1) >= self.incThreshold  and self.txpower < self.maxtxpower:
-                        self.txpower += 1
-                        changePower = True
-                        self.delays.clear()
-                    elif len(self.delays) == self.delays.maxlen and self.delays.count(-1) <= self.decThreshold  and self.txpower > self.mintxpower:
-                        self.txpower -= 1
-                        changePower = True
-                        self.delays.clear()
-                    if changePower:
-                        commandVal = "set:tx-power:" + str(self.txpower)
-                        print "Consumed", commandVal
-                        self.socket.send(commandVal)
-                        condition.release()
+        global queue
+        while True:
+            condition.acquire()
+            if not queue:
+                condition.wait()
+                num = queue.pop()
+                if num == "END":
+                    return
+                num = float(num)
+                self.delays.append(num)
+                changePower = False
+                if len(self.delays) == self.delays.maxlen and self.delays.count(-1) >= self.incThreshold  and self.txpower < self.maxtxpower:
+                    self.txpower += 1
+                    changePower = True
+                    self.delays.clear()
+                elif len(self.delays) == self.delays.maxlen and self.delays.count(-1) <= self.decThreshold  and self.txpower > self.mintxpower:
+                    self.txpower -= 1
+                    changePower = True
+                    self.delays.clear()
+                if changePower:
+                    commandVal = "set:tx-power:" + str(self.txpower)
+                    print "Consumed", commandVal
+                    self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    try:
+                        self.socket.connect(self.addr)
+                    except Exception as e:
+                        print "Exception in Client", e
+                    self.socket.send(commandVal)
+                    self.socket.close()
+                    condition.release()
 
 if __name__ == "__main__":
     progName = "downloadInThread"
