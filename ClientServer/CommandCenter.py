@@ -76,10 +76,11 @@ class Client(Thread):
 					if self.delays.count(-1) >= 5 and self.txpower < self.maxtxpower:
 						self.txpower += 1
 						changePower = True
+						self.delays.clear()
 					elif self.delays.count(-1) <= 2 and self.txpower > self.mintxpower:
 						self.txpower -= 1
 						changePower = True
-
+						self.delays.clear()
 					if changePower:
 						commandVal = "set:tx-power:" + str(self.txpower)
 						print "Consumed", commandVal
