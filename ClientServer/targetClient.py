@@ -4,7 +4,7 @@ import subprocess
 import time
 
 def getPingData():
-    p = subprocess.Popen(['ping', '-c', '1', 'www.google.com'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(['ping', '-c', '1', '-t', '1', 'www.google.com'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     if "64 bytes" in out:
         p_out = out.split('\n')

@@ -9,13 +9,14 @@ condition = Condition()
 queue = []
 
 class Server(Thread):
-    def __init__(self,host,port,name):
+    def __init__(self,host,port,name, downloaderThread):
         Thread.__init__(self)
         self.port = port
         self.host = host
         self.name = name
         self.bufsize = 1024
         self.addr = (host,port)
+        self.downloaderThread = downloaderThread
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(self.addr)
@@ -37,6 +38,7 @@ class Server(Thread):
             condition.notify()
             condition.release()
             if data == "END":
+                self.downloaderThread.queue.put(None)
                 return
 
 class Client(Thread):
@@ -107,7 +109,7 @@ if __name__ == "__main__":
     downloaderQ = Queue()
     downloaderThread = MyThread(downloaderQ, args=(True,))
 
-    server = Server(args.commandIP, args.commandPort, args.name)
+    server = Server(args.commandIP, args.commandPort, args.name, downloaderThread)
     client = Client(args.baseIP, args.basePort, args.name, deque(maxlen=15),22, 22, 27, 5, 2)
     server.start()
     client.start()
