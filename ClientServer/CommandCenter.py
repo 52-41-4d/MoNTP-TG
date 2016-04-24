@@ -23,17 +23,17 @@ class Server(Thread):
     def run(self):
         self.socket.listen(5)
         while True:
-            print 'Waiting for connection..'
+            # print 'Waiting for connection..'
             client, caddr = self.socket.accept()
-            print 'Connected To',caddr
+            # print 'Connected To',caddr
 
             data = client.recv(self.bufsize)
             if not data:
                 continue
-            print data
+            # print data
             condition.acquire()
             queue.append(data)
-            print "Produced", data
+            # print "Produced", data
             condition.notify()
             condition.release()
             if data == "END":
@@ -72,7 +72,7 @@ class Client(Thread):
                 condition.wait()
                 num = queue.pop()
                 if num == "END":
-                    sendSocketData("END")
+                    self.sendSocketData("END")
                     return
                 num = float(num)
                 self.delays.append(num)
@@ -87,7 +87,7 @@ class Client(Thread):
                     self.delays.clear()
                 if changePower:
                     commandVal = "set:tx-power:" + str(self.txpower)
-                    print "Consumed", commandVal
+                    # print "Consumed", commandVal
                     self.sendSocketData(commandVal)
                     condition.release()
 
