@@ -31,7 +31,7 @@ class Server(Thread):
             data = client.recv(self.bufsize)
             if not data:
                 continue
-            # print data
+            print data
             condition.acquire()
             queue.append(data)
             # print "Produced", data
