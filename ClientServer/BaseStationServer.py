@@ -11,6 +11,9 @@ def main(sudoPassword):
         connection, address = serversocket.accept()
         buf = connection.recv(1024)
         if not buf:
+            if buf == "END":
+                serversocket.close()
+                return
             command, typ, value  = buf.split(":")
             if command == "set" and typ == "tx-power":
                 iwconfig_command = "echo {0}| sudo -S sudo iwconfig wlan1 txpower {1}".format(sudoPassword, value)

@@ -55,6 +55,15 @@ class Client(Thread):
         self.decThreshold = decThreshold
         self.socket = None
 
+    def sendSocketData(self, data):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.socket.connect(self.addr)
+        except Exception as e:
+            print "Exception in Client", e
+        self.socket.send(data)
+        self.socket.close()
+
     def run(self):
         global queue
         while True:
@@ -63,6 +72,7 @@ class Client(Thread):
                 condition.wait()
                 num = queue.pop()
                 if num == "END":
+                    sendSocketData("END")
                     return
                 num = float(num)
                 self.delays.append(num)
@@ -78,13 +88,7 @@ class Client(Thread):
                 if changePower:
                     commandVal = "set:tx-power:" + str(self.txpower)
                     print "Consumed", commandVal
-                    self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    try:
-                        self.socket.connect(self.addr)
-                    except Exception as e:
-                        print "Exception in Client", e
-                    self.socket.send(commandVal)
-                    self.socket.close()
+                    self.sendSocketData(commadVal)
                     condition.release()
 
 if __name__ == "__main__":
