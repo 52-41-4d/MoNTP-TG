@@ -35,4 +35,4 @@ if __name__ == "__main__":
         sendPingData(commandServer, commandServerPort, rtt)
         time.sleep(1)
 
-    sendPingData("END")
+    sendPingData(commandServer, commandServerPort, "END")
