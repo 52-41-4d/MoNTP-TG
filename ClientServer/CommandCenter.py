@@ -3,6 +3,7 @@ from threading import Thread, Condition
 from downloadInThread import MyThread
 import argparse
 from collections import deque
+from Queue import Queue
 
 condition = Condition()
 queue = []
