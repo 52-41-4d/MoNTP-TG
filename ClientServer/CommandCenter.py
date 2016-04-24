@@ -40,7 +40,7 @@ class Server(Thread):
                 		return
 
 class Client(Thread):
-	def __init__(self,host,port,name, delays, txpower, mintxpower, maxtxpower):
+	def __init__(self,host,port,name, delays, txpower, mintxpower, maxtxpower, incThreshold, decThreshold):
 		Thread.__init__(self)
 		self.port = port
 		self.host = host
@@ -51,6 +51,8 @@ class Client(Thread):
 		self.txpower = txpower
 		self.mintxpower = mintxpower
 		self.maxtxpower = maxtxpower
+        self.incThreshold = incThreshold
+        self.decThreshold = decThreshold
 
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -73,11 +75,11 @@ class Client(Thread):
 					num = float(num)
 					self.delays.append(num)
 					changePower = False
-					if self.delays.count(-1) >= 5 and self.txpower < self.maxtxpower:
+					if len(self.delay) == self.delay.maxlen and self.delays.count(-1) >= self.incThreshold  and self.txpower < self.maxtxpower:
 						self.txpower += 1
 						changePower = True
 						self.delays.clear()
-					elif self.delays.count(-1) <= 2 and self.txpower > self.mintxpower:
+					elif len(self.delay) == self.delay.maxlen and self.delays.count(-1) <= self.decThreshold  and self.txpower > self.mintxpower:
 						self.txpower -= 1
 						changePower = True
 						self.delays.clear()
@@ -104,7 +106,7 @@ if __name__ == "__main__":
 	downloaderThread = MyThread(downloaderQ, args=(True,))
 
 	server = Server(args.commandIP, args.commandPort, args.name)
-	client = Client(args.baseIP, args.basePort, args.name, deque(maxlen=15),22, 22, 27)
+	client = Client(args.baseIP, args.basePort, args.name, deque(maxlen=15),22, 22, 27, 5, 2)
 	server.start()
 	client.start()
 	downloaderThread.start()
