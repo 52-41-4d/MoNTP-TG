@@ -14,16 +14,20 @@ def getPingData():
 
     return rtt
 
+def sendPingData(rtt):
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientsocket.connect((commandServer, commandServerPort))
+    clientsocket.send(rtt)
+    clientsocket.close()
+
 if __name__ == "__main__":
     commandServer = sys.argv[1]
     commandServerPort = int(sys.argv[2])
     iterations = int(sys.argv[3])
 
-    
     for i in range(0, iterations):
-        clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        clientsocket.connect((commandServer, commandServerPort))
         rtt = getPingData()
-        clientsocket.send(rtt)
-        clientsocket.close()
+        sendPingData(rtt)
         time.sleep(1)
+
+    sendPingData("END")
