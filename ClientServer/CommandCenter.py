@@ -7,9 +7,6 @@ from Queue import Queue
 
 condition = Condition()
 queue = []
-delays = deque(maxlen=15)
-txpower = 22
-maxtxpower = 27
 
 class Server(Thread):
 	def __init__(self,host,port,name):
